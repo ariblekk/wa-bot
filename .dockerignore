@@ -1,0 +1,14 @@
+.git
+.env
+.env.*
+!.env.example
+bin
+build
+*.exe
+*.test
+*.out
+coverage.out
+coverage.html
+.vscode
+.idea
+README.md

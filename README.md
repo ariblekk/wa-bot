@@ -8,24 +8,44 @@ Backend Go + Gin yang menerima webhook GoWA, mengirim pesan teks ke OpenAI-compa
 GoWA webhook -> Gin -> OpenAI-compatible API -> GoWA /send/message
 ```
 
-## Menjalankan
+## Menjalankan dengan Docker
 
-1. Salin `.env.example` menjadi `.env` dan isi nilainya.
-2. Pastikan GoWA mengirim webhook event `message` ke:
+1. Salin `.env.example` menjadi `.env`, lalu isi nilai API dan GoWA.
+2. Jika memory percakapan digunakan, ubah konfigurasi berikut di `.env`:
+
+```env
+CHAT_MEMORY_ENABLED=true
+POSTGRES_DSN=postgres://wa_chatbot:change-this-password@postgres:5432/wa_chatbot?sslmode=disable
+POSTGRES_USER=wa_chatbot
+POSTGRES_PASSWORD=change-this-password
+POSTGRES_DB=wa_chatbot
+```
+
+3. Jalankan aplikasi dan PostgreSQL:
+
+```bash
+docker compose up -d --build
+```
+
+4. Pastikan GoWA mengirim webhook event `message` ke:
 
 ```text
 http://HOST:8080/webhook/gowa
 ```
 
-3. Atur secret yang sama pada GoWA (`WHATSAPP_WEBHOOK_SECRET`) dan aplikasi (`WEBHOOK_SECRET`).
-4. Jalankan:
+Log aplikasi:
 
 ```bash
-go mod tidy
-go run ./cmd/server
+docker compose logs -f app
 ```
 
-Health check tersedia di `GET /health`.
+Hentikan container tanpa menghapus data PostgreSQL:
+
+```bash
+docker compose down
+```
+
+Health check tersedia di `GET /health`. Untuk menjalankan tanpa Docker, gunakan `go run ./cmd/server`.
 
 ## System prompt
 
