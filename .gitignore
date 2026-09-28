@@ -1,0 +1,21 @@
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+
+# Go build output
+/bin/
+/build/
+*.exe
+*.test
+*.out
+
+# Coverage and profiling
+coverage.out
+coverage.html
+
+# IDE and OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
