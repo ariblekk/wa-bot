@@ -32,8 +32,6 @@ services:
       POSTGRES_DB: ${POSTGRES_DB:-wa_chatbot}
       POSTGRES_USER: ${POSTGRES_USER:-wa_chatbot}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-this-password}
-    # PostgreSQL hanya diakses oleh service app melalui network internal Docker.
-    # Jangan expose port 5432 ke host/Dokploy karena biasanya sudah terpakai.
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
