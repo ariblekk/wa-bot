@@ -165,7 +165,7 @@ func (h *WebhookHandler) process(event model.WebhookEvent) {
 		if h.cfg.HumanizeEnabled {
 			_ = h.gowa.SetChatPresence(ctx, event.DeviceID, event.Payload.ChatID, "stop")
 		}
-		h.logger.Printf("openai failed message_id=%s: %v", event.Payload.ID, err)
+		h.logger.Printf("openai failed message_id=%s chat_id=%s error=%v", event.Payload.ID, event.Payload.ChatID, err)
 		return
 	}
 

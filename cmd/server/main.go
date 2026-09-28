@@ -24,6 +24,7 @@ func main() {
 	if err != nil {
 		logger.Fatalf("load config: %v", err)
 	}
+	logger.Printf("config loaded env=%s openai_model=%s webhook_path=%s", cfg.AppEnv, cfg.OpenAIModel, cfg.WebhookPath)
 
 	if cfg.AppEnv == "production" {
 		gin.SetMode(gin.ReleaseMode)

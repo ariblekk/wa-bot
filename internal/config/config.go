@@ -227,13 +227,25 @@ func Load() (Config, error) {
 	// The prompt file is read once at startup, so response latency is
 	// unaffected. OPENAI_SYSTEM_PROMPT is used as a fallback.
 	if cfg.OpenAIPromptFile != "" {
-		raw, err := os.ReadFile(cfg.OpenAIPromptFile)
+		promptPath := cfg.OpenAIPromptFile
+		raw, err := os.ReadFile(promptPath)
 		if err != nil {
-			return Config{}, fmt.Errorf("read OPENAI_SYSTEM_PROMPT_FILE: %w", err)
+			// If relative path fails, try absolute path in /app/prompts (Docker container)
+			if !strings.HasPrefix(promptPath, "/") {
+				altPath := "/app/prompts/" + strings.TrimPrefix(promptPath, "./prompts/")
+				altPath = strings.ReplaceAll(altPath, "//", "/")
+				raw, err = os.ReadFile(altPath)
+				if err != nil {
+					return Config{}, fmt.Errorf("read OPENAI_SYSTEM_PROMPT_FILE from %q and fallback %q: %w", promptPath, altPath, err)
+				}
+				promptPath = altPath
+			} else {
+				return Config{}, fmt.Errorf("read OPENAI_SYSTEM_PROMPT_FILE: %w", err)
+			}
 		}
 		prompt := strings.TrimSpace(string(raw))
 		if prompt == "" {
-			return Config{}, fmt.Errorf("OPENAI_SYSTEM_PROMPT_FILE is empty")
+			return Config{}, fmt.Errorf("OPENAI_SYSTEM_PROMPT_FILE is empty at %q", promptPath)
 		}
 		cfg.OpenAISystemPrompt = prompt
 	}
