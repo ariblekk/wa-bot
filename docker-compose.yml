@@ -8,8 +8,16 @@ services:
     restart: unless-stopped
     env_file:
       - .env
+    environment:
+      APP_HOST: ${APP_HOST:-0.0.0.0}
+      APP_PORT: ${APP_PORT:-8080}
+      OPENAI_SYSTEM_PROMPT_FILE: ${OPENAI_SYSTEM_PROMPT_FILE:-./prompts/system.txt}
+      CHAT_MEMORY_ENABLED: ${CHAT_MEMORY_ENABLED:-true}
+      POSTGRES_DSN: "${POSTGRES_DSN:-postgresql://wa_chatbot:change-this-password@postgres:5432/wa_chatbot?sslmode=disable}"
+      POSTGRES_MAX_CONNS: ${POSTGRES_MAX_CONNS:-10}
+      POSTGRES_MIN_CONNS: ${POSTGRES_MIN_CONNS:-2}
     ports:
-      - "${APP_PORT:-8080}:8080"
+      - "${APP_PORT:-8080}:${APP_PORT:-8080}"
     depends_on:
       postgres:
         condition: service_healthy
