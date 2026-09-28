@@ -1,7 +1,10 @@
-FROM golang:1.22-alpine AS build
+FROM golang:1.25-bookworm AS build
 
 WORKDIR /src
-COPY go.mod go.sum* ./
+
+# A dependency requires Go >= 1.25, so the image must not be older than that.
+ENV GOPROXY=https://proxy.golang.org,direct
+COPY go.mod go.sum ./
 RUN go mod download
 COPY . .
 RUN CGO_ENABLED=0 GOOS=linux go build -trimpath -ldflags="-s -w" -o /out/wa-chatbot ./cmd/server
